@@ -20,13 +20,15 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         run: |
-             clang++ -pedantic-errors -std=c++17 collatz.cpp -o collatz
+             !(grep -qwRE --include=*.{cc,cpp,h} '<vector>|<list>|<algorithm>|<stack>|<queue>|<deque>|<set>|<map>|<string>|<bits' ./* ) &&  (echo \"Build...\" )  || ( echo \"Forbiden STL containers\" && exit 9 )
+             clang++ -pedantic-errors -std=c++20 collatz.cpp -o collatz
       - name: Autograding
         uses: amcp-pit/autograding@v1
       - name: Code linting
         uses: amcp-pit/cpp-linter@v1
         with:
           extra-args-before: '-xc++'
+          extra-args: '-std=c++20'
           after-args: '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
       - name: Checkout
         uses: actions/checkout@v4
